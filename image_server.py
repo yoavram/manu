@@ -28,7 +28,7 @@ def get_thumbnail_url(image_id, image_format):
 
 
 def add_image(image, name=None):
-	if name == None:
+	if not name: 
 		name = '.'.join(image.filename.split('.')[:-1])
 	params = cloudinary.uploader.build_upload_params(public_id=name)
 	json_result = cloudinary.uploader.call_api("upload", params, file=image.stream)
@@ -43,7 +43,8 @@ def index():
 		image = request.files['image']
 		if not image.filename:
 			return render_template("message.html", message_title="Bad form", message_body="Please provide an image file")	
-		image_id, image_format = add_image(image)
+		name = request.form['name']	
+		image_id, image_format = add_image(image, name)
 		return redirect('/' + image_id + '/' + image_format)
 
 @app.route("/<string:image_id>/<string:image_format>")
