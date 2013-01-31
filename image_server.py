@@ -42,13 +42,17 @@ def index():
 		if not image.filename:
 			return render_template("message.html", message_title="Bad form", message_body="Please provide an image file")	
 		image_id, image_format = add_image(image)
-		if not image_id:
-			return render_template("message.html", message_title="Image upload failed")
-		image_url = get_image_url(image_id,image_format)
-		thumbnail_url = get_thumbnail_url(image_id,image_format)
-		if not image_url or not thumbnail_url:
-			return render_template("message.html", message_title="Image lookup failed") 
-		return render_template("image.html", image_url=image_url, thumbnail_url=thumbnail_url)
+		return redirect('/' + image_id + '/' + image_format)
+
+@app.route("/<string:image_id>/<string:image_format>")
+def show_image(image_id, image_format):
+	if not image_id:
+		return render_template("message.html", message_title="Image upload failed")
+	image_url = get_image_url(image_id,image_format)
+        thumbnail_url = get_thumbnail_url(image_id,image_format)
+        if not image_url or not thumbnail_url:
+       		return render_template("message.html", message_title="Image lookup failed")
+        return render_template("image.html", image_url=image_url, thumbnail_url=thumbnail_url)
 
 
 if __name__ == '__main__':
