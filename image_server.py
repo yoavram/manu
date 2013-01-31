@@ -16,6 +16,7 @@ CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL")
 app = Flask(__name__)
 app.config.from_object(__name__)  
 
+
 def get_image_url(image_id, image_format):
         image_url = cloudinary.utils.cloudinary_url(image_id)[0] + '.' + image_format
         return image_url 
@@ -38,7 +39,11 @@ def index():
 		image_id, image_format = add_image(image)
 		if not image_id:
 			return render_template("message.html", message_title="Image upload failed")
-		return render_template("image.html", image_url=get_image_url(image_id,image_format))
+		image_url=get_image_url(image_id,image_format)
+		if not image_url:
+			return render_template("message.html", message_title="Image lookup failed") 
+		return render_template("image.html", image_url=image_url)
+
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 5001))
