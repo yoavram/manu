@@ -27,8 +27,10 @@ def get_thumbnail_url(image_id, image_format):
 	return thumbnail_url
 
 
-def add_image(image):
-	params = cloudinary.uploader.build_upload_params()
+def add_image(image, name=None):
+	if name == None:
+		name = '.'.join(image.filename.split('.')[:-1])
+	params = cloudinary.uploader.build_upload_params(public_id=name)
 	json_result = cloudinary.uploader.call_api("upload", params, file=image.stream)
     	return json_result['public_id'], json_result['format']
 
