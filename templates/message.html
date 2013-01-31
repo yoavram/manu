@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>{{ message_title }}</h1>
+{% if message_body %}
+<div class="message-body">
+<p>
+{{ message_body }}
+</p>
+</div>
+{% endif %}
+<div class="footer">
+<p>
+<a href="/">Back</a> 
+</p>
+</div>
+{% endblock %}
