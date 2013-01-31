@@ -2,9 +2,11 @@
 
 {% block body %}
 <h1>Image uploaded</h1>
-<div class="image-div>
+<div class="image-div">
 <p>
-<img src="{{ image_url }}">
+<a href="{{ image_url }}"> 
+<img src="{{ thumbnail_url }}">
+</a>
 </p>
 </div>
 <div class="footer">

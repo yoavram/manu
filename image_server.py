@@ -22,6 +22,11 @@ def get_image_url(image_id, image_format):
         return image_url 
 
 
+def get_thumbnail_url(image_id, image_format):
+	thumbnail_url = cloudinary.utils.cloudinary_url(image_id, width=40, crop="fill")[0] + '.' + image_format
+	return thumbnail_url
+
+
 def add_image(image):
 	params = cloudinary.uploader.build_upload_params()
 	json_result = cloudinary.uploader.call_api("upload", params, file=image.stream)
@@ -39,10 +44,11 @@ def index():
 		image_id, image_format = add_image(image)
 		if not image_id:
 			return render_template("message.html", message_title="Image upload failed")
-		image_url=get_image_url(image_id,image_format)
-		if not image_url:
+		image_url = get_image_url(image_id,image_format)
+		thumbnail_url = get_thumbnail_url(image_id,image_format)
+		if not image_url or not thumbnail_url:
 			return render_template("message.html", message_title="Image lookup failed") 
-		return render_template("image.html", image_url=image_url)
+		return render_template("image.html", image_url=image_url, thumbnail_url=thumbnail_url)
 
 
 if __name__ == '__main__':
