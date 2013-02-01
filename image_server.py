@@ -3,9 +3,9 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-from flask import Flask, request, render_template, redirect, Response, url_for
+from flask import Flask, request, render_template, redirect, Response, url_for, jsonify
 import os
-import cloudinary, cloudinary.uploader
+import cloudinary, cloudinary.uploader, cloudinary.api
 
 # add environment variables using 'heroku config:add VARIABLE_NAME=variable_name'
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
@@ -16,11 +16,19 @@ CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL")
 app = Flask(__name__)
 app.config.from_object(__name__)  
 
+if app.debug:
+	print "**Debug mode"
+else:
+	print "**Production mode"
 
 def get_image_url(image_id, image_format):
         image_url = cloudinary.utils.cloudinary_url(image_id)[0] + '.' + image_format
         return image_url 
 
+
+def get_image_list():
+	json_result = cloudinary.api.resources()
+	return json_result
 
 def get_thumbnail_url(image_id, image_format):
 	thumbnail_url = cloudinary.utils.cloudinary_url(image_id, width=40, crop="fill")[0] + '.' + image_format
@@ -45,9 +53,9 @@ def index():
 			return render_template("message.html", message_title="Bad form", message_body="Please provide an image file")	
 		name = request.form['name']	
 		image_id, image_format = add_image(image, name)
-		return redirect('/' + image_id + '/' + image_format)
+		return redirect(url_for('show_image', image_id=image_id, image_format=image_format))
 
-@app.route("/<string:image_id>/<string:image_format>")
+@app.route("/image/<string:image_id>/<string:image_format>")
 def show_image(image_id, image_format):
 	if not image_id:
 		return render_template("message.html", message_title="Image upload failed")
@@ -57,8 +65,12 @@ def show_image(image_id, image_format):
        		return render_template("message.html", message_title="Image lookup failed")
         return render_template("image.html", image_url=image_url, thumbnail_url=thumbnail_url)
 
+@app.route("/list")
+def list_images():
+	return jsonify(get_image_list())
+
 
 if __name__ == '__main__':
-	port = int(os.environ.get('PORT', 5000))
+	port = int(os.environ.get('PORT', 5000))	
 	app.run(host='0.0.0.0', port=port, debug=app.debug)
 	print "** Server shutdown"
