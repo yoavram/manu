@@ -19,7 +19,7 @@
 2. Clone repo: `git clone https://github.com/yoavram/manu.git`
 3. Add heroku remote: `heroku git:remote -a manumanu`
 4. Create a local `.env` file with the configuration: `heroku config -s | grep CLOUD >> .env`
-5. Add a debug variable to the `.env` file: `echo "DEBUG=True" >> .env`
+5. Add a debug variable to the `.env` file: `echo DEBUG=True >> .env`
 6. Create a virtual environment using *virtualenv*: `virtualenv venv`
 7. Activate the virtual environment: On linux `source venv/bin/activate/`, on windows `venv\Scripts\activate.bat`
 8. Install python requirements: `pip install -r requirements.txt`
