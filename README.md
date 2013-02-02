@@ -1,6 +1,9 @@
 # manu
 ## Everybody's a critic
 
+This is the server repository.
+There is also an [android repository](https://github.com/ofermoshsaioff/manu-android).
+
 ## Setup and run 
 
 ### Dependencies
