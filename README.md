@@ -29,3 +29,45 @@
 
 Run the server locally using *Foreman*: `foreman start`.
 You could also start it via `python image_server.py` but it will not read the *heroku* configuration so you will not be connected to third-party services.
+
+## REST API
+
+The main API URL is `http://manumanu.herokuapp.com`, or `http://localhost:5000` if you are working locally.
+
+### Upload image
+
+Used to upload a single image.
+
+- Endpoint: `/image`
+- Method: `POST`
+- Post data: `name`, optional, an identifier for the image
+- Post files: `image`, mandatory, a single image file stream
+- Returns a JSON with the following keys:
+  - `image_id: an identifier of the image. Save this to retrieve/delete the image later on. This is equal to `name` if `name was given.
+  - `image_url`: the URL of the image (may change, so save the ID not the URL)
+  - `image_format: the format (i.e. `png`, `jpg`) of the image. Save this to retrieve a correct image URL later on.
+See example in the form in `index.html`.
+
+### List images
+Lists the images in the server.
+
+- Endpoint: `/listImages`
+- Method: `GET`
+- No data or arguments
+- Returns a JSON with a list `[]` of image details as specifiec in [cloudinary docs]()
+
+### Image URL
+
+Get the URL of an image
+
+- Endpoint: `image/<string:image_id>/<string:image_format>`
+- Method: `GET`
+- Returns a string of the URL
+
+### Image thumbnail URL
+
+Get the URL of a thumbnail for an image
+
+- Endpoint: `thumbnail/<string:image_id>/<string:image_format>`
+- Method: `GET`
+- Returns a string of the URL
