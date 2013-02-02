@@ -2,11 +2,15 @@
 
 {% block body %}
 <form action='/' method="post" enctype="multipart/form-data" id="main-form">
-    <label>Image file</label>
-    <input type="file" name="image" required></input>
-    <br>
-    <input type="text" name="name" placeholder="Agadir Yoav 20.1.13">
-    <br>
-    <button type="submit">Send</button>
+	<fieldset>
+		<legend>Image upload</legend>
+		<label>Image file</label>
+		<input type="file" name="image" required></input>
+		<span class="help-block">Image file to upload.</span>
+		<label>Image name</label>
+		<input type="text" name="name" placeholder="Agadir Yoav 20.1.13">
+		<span class="help-block">Optional image name.</span>
+		<button type="submit" class="btn">Submit</button>
+	</fieldset>
 </form>
 {% endblock %}
