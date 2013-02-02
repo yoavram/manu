@@ -35,6 +35,7 @@ def index():
 		thumbnail_url = get_thumbnail_url(image_id, image_format)
 		return render_template("image.html", image_url=image_url, thumbnail_url=thumbnail_url)
 	else:
+
 		return render_template("index.html")
 	
 
@@ -63,8 +64,15 @@ def _upload_image():
 
 @app.route("/listImages")
 def list_images():
+	return jsonify(_list_images())
+
+
+def _list_images():
 	result = cloudinary.api.resources()
-	return jsonify(result)
+	if check_error(result): return result
+	resources = result['resources']
+	resources =  [{'image_id':item['public_id'], 'image_format': item['format'], 'image_url': item['url']} for item in resources ]
+	return {'images': resources}
 
 
 @app.route("/image/<string:image_id>/<string:image_format>")
