@@ -46,7 +46,15 @@ Used to upload a single image.
   - `image_id`: an identifier of the image. Save this to retrieve/delete the image later on. This is equal to `name` if `name was given.
   - `image_url`: the URL of the image (may change, so save the ID not the URL)
   - `image_format`: the format (i.e. `png`, `jpg`) of the image. Save this to retrieve a correct image URL later on.
-See example in the form in `index.html`.
+See example in the form in `index.html` or here:
+
+```
+{
+      "image_id": "stam tmuna",
+      "image_format": "png",
+      "image_url": "http://res.cloudinary.com/hx5wzcyfc/image/upload/v1359814682/stam+tmuna.png"
+}
+```
 
 ### List images
 Lists the images in the server.
@@ -54,16 +62,46 @@ Lists the images in the server.
 - Endpoint: `/listImages`
 - Method: `GET`
 - No data or arguments
-- Returns a JSON with a list `[]` of image details (`image_id`, `image_url`, `image_format`)
+- Returns a JSON with a list names `images` of image details (`image_id`, `image_url`, `image_format`).
+
+Example:
+
+```
+{
+  "images": [
+    {
+      "image_id": "stam tmuna",
+      "image_format": "png",
+      "image_url": "http://res.cloudinary.com/hx5wzcyfc/image/upload/v1359814682/stam+tmuna.png"
+    },
+    {
+      "image_id": "logo2",
+      "image_format": "png",
+      "image_url": "http://res.cloudinary.com/hx5wzcyfc/image/upload/v1359814629/logo2.png"
+    },
+    {
+      "image_id": "logo1",
+      "image_format": "png",
+      "image_url": "http://res.cloudinary.com/hx5wzcyfc/image/upload/v1359812613/logo1.png"
+    }
+  ]
+}
+```
+    
 
 ### Image URL
 
-Get the URL of an image
+Get the URL of an image.
 
 - Endpoint: `image/<string:image_id>/<string:image_format>`
 - Method: `GET`
 - Returns a string of the URL
 
+Example:
+
+```
+http://res.cloudinary.com/hx5wzcyfc/image/upload/ofer.jpg
+```
 ### Image thumbnail URL
 
 Get the URL of a thumbnail for an image
