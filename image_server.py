@@ -35,8 +35,9 @@ def index():
 		thumbnail_url = get_thumbnail_url(image_id, image_format)
 		return render_template("image.html", image_url=image_url, thumbnail_url=thumbnail_url)
 	else:
-
-		return render_template("index.html")
+		images = _list_images()
+		print images
+		return render_template("index.html", images=images['images'])
 	
 
 # REST API

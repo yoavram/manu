@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block body %}
+<div>
+	<h1>Image upload</h1>
 <form action='/' method="post" enctype="multipart/form-data" id="main-form">
 	<fieldset>
-		<legend>Image upload</legend>
 		<label>Image file</label>
 		<input type="file" name="image" required></input>
 		<span class="help-block">Image file to upload.</span>
@@ -13,4 +14,20 @@
 		<button type="submit" class="btn">Submit</button>
 	</fieldset>
 </form>
+</div>
+{% if images %}
+<div>
+<h1>Image directory</h1>
+<ul>
+{% for img in images %}
+	<li>
+		<a href="{{ img.image_url }}">
+			{{ img.image_id }}
+		</a>
+	</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+
 {% endblock %}
