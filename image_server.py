@@ -8,7 +8,7 @@ import os
 import cloudinary, cloudinary.uploader, cloudinary.api
 
 # add environment variables using 'heroku config:add VARIABLE_NAME=variable_name'
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True').strip() == 'True'
 # Cloudinary
 CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL")
 
@@ -19,56 +19,72 @@ app.config.from_object(__name__)
 if app.debug:
 	print "**Debug mode"
 else:
-	print "**Production mode"
-
-def get_image_url(image_id, image_format):
-        image_url = cloudinary.utils.cloudinary_url(image_id)[0] + '.' + image_format
-        return image_url 
+	print "**Production mode:"
 
 
-def get_image_list():
-	json_result = cloudinary.api.resources()
-	return json_result
+# Web API
+@app.route("/", methods=["GET","POST"])
+def index():
+	if request.method == "POST":
+		print "filename:", request.files['image'].filename
+		result = _upload_image()
+		print "result:",result
+		if check_error(result): 
+			return print_error(result)
+		image_id, image_format, image_url = result['image_id'], result['image_format'], result['image_url']
+		thumbnail_url = get_thumbnail_url(image_id, image_format)
+		return render_template("image.html", image_url=image_url, thumbnail_url=thumbnail_url)
+	else:
+		return render_template("index.html")
+	
 
-def get_thumbnail_url(image_id, image_format):
-	thumbnail_url = cloudinary.utils.cloudinary_url(image_id, width=40, crop="fill")[0] + '.' + image_format
-	return thumbnail_url
+# REST API
+@app.route("/image", methods=["POST"])
+def upload_image():
+	return jsonify(_upload_image())
 
-
-def add_image(image, name=None):
+def _upload_image():
+	image = request.files['image']
+	if not image.filename: 
+		json_error("Image file missing")	
+	name = request.form['name']	
 	if not name: 
 		name = '.'.join(image.filename.split('.')[:-1])
 	params = cloudinary.uploader.build_upload_params(public_id=name)
-	json_result = cloudinary.uploader.call_api("upload", params, file=image.stream)
-    	return json_result['public_id'], json_result['format']
+	json_result = cloudinary.uploader.call_api("upload", params, file=image.stream)	
+	if check_error(json_result):
+		return json_result
+	return {	
+			'image_url': json_result['url'], 
+			'image_id': json_result['public_id'], 
+			'image_format': json_result['format']
+		}
 
 
-@app.route("/",  methods=['GET', 'POST'])
-def index():
-	if request.method == 'GET':
-		return render_template("index.html")
-	else:
-		image = request.files['image']
-		if not image.filename:
-			return render_template("message.html", message_title="Bad form", message_body="Please provide an image file")	
-		name = request.form['name']	
-		image_id, image_format = add_image(image, name)
-		return redirect(url_for('show_image', image_id=image_id, image_format=image_format))
+@app.route("/listImages")
+def list_images():
+	result = cloudinary.api.resources()
+	return jsonify(result)
+
 
 @app.route("/image/<string:image_id>/<string:image_format>")
-def show_image(image_id, image_format):
-	if not image_id:
-		return render_template("message.html", message_title="Image upload failed")
-	image_url = get_image_url(image_id,image_format)
-        thumbnail_url = get_thumbnail_url(image_id,image_format)
-        if not image_url or not thumbnail_url:
-       		return render_template("message.html", message_title="Image lookup failed")
-        return render_template("image.html", image_url=image_url, thumbnail_url=thumbnail_url)
+def get_image_url(image_id, image_format):
+	return cloudinary.utils.cloudinary_url(image_id)[0] + '.' + image_format
 
-@app.route("/list")
-def list_images():
-	return jsonify(get_image_list())
 
+@app.route("/thumbnail/<string:image_id>/<string:image_format>")
+def get_thumbnail_url(image_id, image_format):
+	return 	cloudinary.utils.cloudinary_url(image_id, width=40, crop="fill")[0] + '.' + image_format
+
+
+def json_error(error_message):
+	return {"error": {'message': error_message}}
+
+def check_error(result):
+	return 'error' in result
+
+def print_error(result):
+	return render_template("message.html", message_title='Error', message_body=result['error']['message'])
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 5000))	
