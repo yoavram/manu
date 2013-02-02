@@ -43,9 +43,9 @@ Used to upload a single image.
 - Post data: `name`, optional, an identifier for the image
 - Post files: `image`, mandatory, a single image file stream
 - Returns a JSON with the following keys:
-  - `image_id: an identifier of the image. Save this to retrieve/delete the image later on. This is equal to `name` if `name was given.
+  - `image_id`: an identifier of the image. Save this to retrieve/delete the image later on. This is equal to `name` if `name was given.
   - `image_url`: the URL of the image (may change, so save the ID not the URL)
-  - `image_format: the format (i.e. `png`, `jpg`) of the image. Save this to retrieve a correct image URL later on.
+  - `image_format`: the format (i.e. `png`, `jpg`) of the image. Save this to retrieve a correct image URL later on.
 See example in the form in `index.html`.
 
 ### List images
@@ -54,7 +54,7 @@ Lists the images in the server.
 - Endpoint: `/listImages`
 - Method: `GET`
 - No data or arguments
-- Returns a JSON with a list `[]` of image details as specifiec in [cloudinary docs]()
+- Returns a JSON with a list `[]` of image details (`image_id`, `image_url`, `image_format`)
 
 ### Image URL
 
