@@ -3,6 +3,7 @@
 
 This is the server repository.
 There is also an [android repository](https://github.com/ofermoshsaioff/manu-android).
+Check out the RESI API [docs](http://docs.manumanu.apiary.io/) and [mock server](http://manumanu.apiary.io).
 
 ## Setup and run 
 
